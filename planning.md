@@ -15,7 +15,7 @@
 
 **Why it's valuable:** Finding housing in the U-District is one of the highest-stakes decisions a UW student makes — it affects budget, commute, safety, and quality of life. The real questions students have ("Is this landlord responsive?" "Is [building] worth the price?" "Which property managers to avoid?") require lived experience, not brochure copy.
 
-**Why it's hard to find officially:** UW's official housing resources list available units but don't aggregate tenant experiences or flag problem landlords. That knowledge lives in scattered Reddit threads, Yelp reviews, Facebook groups, and word of mouth — across multiple platforms, hard to search, and easy to miss. A RAG system that consolidates this into a single queryable interface fills a real gap.
+**Why it's hard to find officially:** UW's official housing resources list available units but don't aggregate tenant experiences or flag problem landlords. That knowledge is spread across Reddit threads, Yelp reviews, Facebook groups, and word of mouth. It's on multiple platforms, hard to search, and easy to miss. A RAG system that pulls it all into one searchable place is genuinely useful.
 
 ---
 
@@ -49,7 +49,7 @@
      numbers fit the structure of your documents.
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
-**Chunk size:** 200 words maximum (word count as token proxy — see note below)
+**Chunk size:** 200 words maximum (word count as token proxy, see note below)
 
 **Overlap:** None for the natural-boundary chunkers. Overlap isn't needed when cuts respect semantic units; the legacy `chunk_text()` function retains 30-word overlap for reference only.
 
@@ -65,9 +65,9 @@ Manual inspection of 5 sample chunks from the original word-based splitter revea
 
 **Corpus-level result:** 132 chunks across 13 documents, average 103 words per chunk (range: 16–200).
 
-**Known limitation:** Very short Reddit comments (e.g., "Define affordable for you" — 4 words) produce weak embeddings with too little signal for similarity search to work reliably. A potential fix is enforcing a minimum chunk size and merging short comments into an adjacent block.
+**Known limitation:** Very short Reddit comments produce weak embeddings with too little signal for similarity search. Fixed by dropping chunks under 15 words (`MIN_CHUNK_WORDS = 15` in `pipeline.py`).
 
-**Note on token vs. word splitting:** At ~1.2 tokens/word for English text, 200 words ≈ 240 tokens — safely within `all-MiniLM-L6-v2`'s 256-token hard limit.
+**Note on token vs. word splitting:** At ~1.2 tokens/word for English text, 200 words ≈ 240 tokens, safely within `all-MiniLM-L6-v2`'s 256-token hard limit.
 
 ---
 
@@ -79,11 +79,11 @@ Manual inspection of 5 sample chunks from the original word-based splitter revea
      would you weigh in choosing a different embedding model — context length, multilingual
      support, accuracy on domain-specific text, latency? -->
 
-**Embedding model:** `all-MiniLM-L6-v2` via sentence-transformers. It's fast, runs locally without an API key, and handles short review-length text well — which matches most of this corpus.
+**Embedding model:** `all-MiniLM-L6-v2` via sentence-transformers. It's fast, runs locally without an API key, and handles short review-length text well, which matches most of this corpus.
 
-**Top-k:** 5. Most questions are specific enough that 5 chunks gives the generator enough material to synthesize a good answer without flooding it with noise. If retrieval quality feels weak during evaluation, I'll bump to 7.
+**Top-k:** 5. Most questions are specific enough that 5 chunks gives the model enough to work with. Top-k stayed at 5 after evaluation — retrieval quality was sufficient.
 
-**Production tradeoff reflection:** For real users I'd look hard at `text-embedding-3-small` from OpenAI — better accuracy on domain-specific text, longer context window (8191 tokens vs. 256 for MiniLM), and still relatively cheap at $0.02/1M tokens. The main tradeoff is latency and API dependency vs. the local model's zero marginal cost. For a housing guide where queries are in English and the corpus is English-only, multilingual support isn't a priority — so I'd skip models like Cohere Embed Multilingual unless the audience shifts.
+**Production tradeoff reflection:** For real users I'd look at `text-embedding-3-small` from OpenAI. It has better accuracy on domain-specific text, a longer context window (8,191 tokens vs. 256 for MiniLM), and costs $0.02/1M tokens. The tradeoff is API latency and cost vs. running free locally. The corpus is English-only, so multilingual support isn't a factor. I'd skip Cohere Embed Multilingual unless the audience changed.
 
 ---
 
@@ -142,10 +142,10 @@ flowchart LR
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-I gave Claude the Documents table and the Chunking Strategy section and asked it to implement `load_documents()` and a chunking pipeline. The initial implementation used a single word-based `chunk_text()` with 200-word chunks and 30-word overlap. After manually inspecting 5 sample chunks and finding mid-sentence cuts and cross-chunk pronoun references, the pipeline was refactored into three document-aware strategies: `chunk_reviews()` for ApartmentRatings files (one chunk per review, `---` delimited), `chunk_reddit()` for Reddit files (one chunk per post/comment, `---` delimiters added to source files), and `chunk_article()` for articles and guides (paragraph-boundary accumulation). Result: 132 chunks across 13 documents, avg 103 words, no mid-sentence cuts.
+I gave Claude the Documents table and the Chunking Strategy section and asked it to implement `load_documents()` and a chunking pipeline. The initial implementation used a single word-based `chunk_text()` with 200-word chunks and 30-word overlap. After manually inspecting 5 sample chunks and finding mid-sentence cuts and cross-chunk pronoun references, I refactored it into three document-aware strategies: `chunk_reviews()` for ApartmentRatings files (one chunk per review, `---` delimited), `chunk_reddit()` for Reddit files (one chunk per post/comment, `---` delimiters added to source files), and `chunk_article()` for articles and guides (paragraph-boundary accumulation). Result: 132 chunks across 13 documents, avg 103 words, no mid-sentence cuts.
 
 **Milestone 4 — Embedding and retrieval:**
-I'll give Claude the Retrieval Approach section and the Architecture diagram and ask it to implement `embed_chunks()` using all-MiniLM-L6-v2 and `retrieve()` using ChromaDB returning top-5 chunks with metadata. I'll verify by running the 5 evaluation questions and confirming the returned chunks are actually about the right building or topic.
+I gave Claude the Retrieval Approach section and the Architecture diagram and asked it to implement `embed_and_store()` using all-MiniLM-L6-v2 and `retrieve()` using ChromaDB returning top-5 chunks with metadata. Verified by running the 5 evaluation queries and confirming returned chunks matched the right building or topic.
 
 **Milestone 5 — Generation and interface:**
-I'll give Claude the Architecture diagram, the Evaluation Plan, and the Groq model name and ask it to implement the prompt template, the Groq API call, and a basic CLI interface. I'll verify by running all 5 test questions end-to-end and checking that answers don't include details that aren't in the retrieved chunks.
+I gave Claude the Architecture diagram, the Evaluation Plan, and the Groq model name and asked it to implement the prompt template, the Groq API call, and the CLI/Gradio interface. Verified by running all 5 test questions end-to-end and checking that answers stayed within the retrieved passages.
