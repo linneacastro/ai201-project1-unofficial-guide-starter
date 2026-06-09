@@ -55,11 +55,11 @@
      numbers fit the structure of your documents.
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
-**Chunk size:**
+**Chunk size:** 300 tokens
 
-**Overlap:**
+**Overlap:** 50 tokens
 
-**Reasoning:**
+**Reasoning:** Most of the corpus is short reviews — a full Yelp or ApartmentRatings review fits in roughly 100–250 tokens, so 300 keeps each review intact as one chunk rather than splitting it mid-thought. The longer Daily UW articles and the Tripalink guide will get split, and 50 tokens of overlap is enough to keep a sentence from losing its context at a chunk boundary without creating too much noise.
 
 ---
 
@@ -71,11 +71,11 @@
      would you weigh in choosing a different embedding model — context length, multilingual
      support, accuracy on domain-specific text, latency? -->
 
-**Embedding model:**
+**Embedding model:** `all-MiniLM-L6-v2` via sentence-transformers. It's fast, runs locally without an API key, and handles short review-length text well — which matches most of this corpus.
 
-**Top-k:**
+**Top-k:** 5. Most questions are specific enough that 5 chunks gives the generator enough material to synthesize a good answer without flooding it with noise. If retrieval quality feels weak during evaluation, I'll bump to 7.
 
-**Production tradeoff reflection:**
+**Production tradeoff reflection:** For real users I'd look hard at `text-embedding-3-small` from OpenAI — better accuracy on domain-specific text, longer context window (8191 tokens vs. 256 for MiniLM), and still relatively cheap at $0.02/1M tokens. The main tradeoff is latency and API dependency vs. the local model's zero marginal cost. For a housing guide where queries are in English and the corpus is English-only, multilingual support isn't a priority — so I'd skip models like Cohere Embed Multilingual unless the audience shifts.
 
 ---
 
@@ -102,19 +102,22 @@
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. **Generic retrieval across buildings.** Reviews tend to use the same phrases regardless of which property they're talking about — "management is slow," "great location," "thin walls." A query about one building could pull back chunks about a completely different one. To help, I'll include the building name in each chunk's text and metadata so the embedding has something specific to latch onto.
 
-2.
+2. **Scraping failures.** Yelp blocks scrapers, and ApartmentRatings pages sometimes return partial content or a 403. If a source silently fails, I won't know the corpus has gaps unless I check. I'll log how many chunks came from each source at ingest time, and fall back to manual copy-paste for anything that won't load.
 
 ---
 
 ## Architecture
 
-<!-- Draw a diagram of your pipeline showing the five stages:
-     Document Ingestion → Chunking → Embedding + Vector Store → Retrieval → Generation
-     Label each stage with the tool or library you're using.
-     You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
-     You'll use this diagram as context when prompting AI tools to implement each stage. -->
+```mermaid
+flowchart LR
+    A[Document Ingestion\nrequests + BeautifulSoup] --> B[Chunking\nPython, 300 tok / 50 overlap]
+    B --> C[Embedding\nall-MiniLM-L6-v2]
+    C --> D[Vector Store\nChromaDB]
+    D --> E[Retrieval\ntop-k=5]
+    E --> F[Generation\nGroq — llama-3.3-70b-versatile]
+```
 
 ---
 
@@ -131,7 +134,10 @@
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
+I'll give Claude the Documents table and the Chunking Strategy section and ask it to implement `load_documents()` and `chunk_text()` — 300 token chunks, 50 token overlap, building name included in each chunk's text. I'll verify by checking chunk counts per source and manually reading a few chunks to make sure reviews aren't split mid-sentence.
 
 **Milestone 4 — Embedding and retrieval:**
+I'll give Claude the Retrieval Approach section and the Architecture diagram and ask it to implement `embed_chunks()` using all-MiniLM-L6-v2 and `retrieve()` using ChromaDB returning top-5 chunks with metadata. I'll verify by running the 5 evaluation questions and confirming the returned chunks are actually about the right building or topic.
 
 **Milestone 5 — Generation and interface:**
+I'll give Claude the Architecture diagram, the Evaluation Plan, and the Groq model name and ask it to implement the prompt template, the Groq API call, and a basic CLI interface. I'll verify by running all 5 test questions end-to-end and checking that answers don't include details that aren't in the retrieved chunks.
