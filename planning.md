@@ -55,11 +55,25 @@
      numbers fit the structure of your documents.
      A review-heavy corpus warrants different chunking than a long FAQ. -->
 
-**Chunk size:** 300 tokens
+**Chunk size:** 200 words maximum (word count as token proxy — see note below)
 
-**Overlap:** 50 tokens
+**Overlap:** None for the natural-boundary chunkers. Overlap isn't needed when cuts respect semantic units; the legacy `chunk_text()` function retains 30-word overlap for reference only.
 
-**Reasoning:** Most of the corpus is short reviews — a full Yelp or ApartmentRatings review fits in roughly 100–250 tokens, so 300 keeps each review intact as one chunk rather than splitting it mid-thought. The longer Daily UW articles and the Tripalink guide will get split, and 50 tokens of overlap is enough to keep a sentence from losing its context at a chunk boundary without creating too much noise.
+**Chunking strategy — three-way dispatch:**
+
+Manual inspection of 5 sample chunks from the original word-based splitter revealed a core quality problem: every chunk had a mid-sentence start or end, and article chunks contained pronouns/names with no referent ("Part of Wu's success..." with Wu introduced in a previous chunk). The implementation was refactored into three document-aware strategies:
+
+| Document type | Files | Strategy | Function |
+|---|---|---|---|
+| Apartment reviews | `apartmentratings_*` | One chunk per review, split on `---` delimiters; building name prepended to every chunk for standalone context | `chunk_reviews()` |
+| Reddit posts/comments | `reddit_*` | One chunk per post or comment, split on `---` delimiters added to source files; header-only blocks filtered | `chunk_reddit()` |
+| Articles and guides | everything else | Paragraphs accumulated up to 200 words, flushed at paragraph boundary; sentence-boundary fallback for oversized single paragraphs | `chunk_article()` |
+
+**Corpus-level result:** 140 chunks across 13 documents, average 97 words per chunk (range: 4–200).
+
+**Known limitation:** Very short Reddit comments (e.g., "Define affordable for you" — 4 words) produce weak embeddings with too little signal for similarity search to work reliably. A potential fix is enforcing a minimum chunk size and merging short comments into an adjacent block.
+
+**Note on token vs. word splitting:** At ~1.2 tokens/word for English text, 200 words ≈ 240 tokens — safely within `all-MiniLM-L6-v2`'s 256-token hard limit.
 
 ---
 
@@ -112,7 +126,7 @@
 
 ```mermaid
 flowchart LR
-    A[Document Ingestion\nrequests + BeautifulSoup] --> B[Chunking\nPython, 300 tok / 50 overlap]
+    A[Document Ingestion\nrequests + BeautifulSoup] --> B[Chunking\nPython, semantic boundaries, ≤200 words]
     B --> C[Embedding\nall-MiniLM-L6-v2]
     C --> D[Vector Store\nChromaDB]
     D --> E[Retrieval\ntop-k=5]
@@ -134,7 +148,7 @@ flowchart LR
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-I'll give Claude the Documents table and the Chunking Strategy section and ask it to implement `load_documents()` and `chunk_text()` — 300 token chunks, 50 token overlap, building name included in each chunk's text. I'll verify by checking chunk counts per source and manually reading a few chunks to make sure reviews aren't split mid-sentence.
+I gave Claude the Documents table and the Chunking Strategy section and asked it to implement `load_documents()` and a chunking pipeline. The initial implementation used a single word-based `chunk_text()` with 200-word chunks and 30-word overlap. After manually inspecting 5 sample chunks and finding mid-sentence cuts and cross-chunk pronoun references, the pipeline was refactored into three document-aware strategies: `chunk_reviews()` for ApartmentRatings files (one chunk per review, `---` delimited), `chunk_reddit()` for Reddit files (one chunk per post/comment, `---` delimiters added to source files), and `chunk_article()` for articles and guides (paragraph-boundary accumulation). Result: 140 chunks across 13 documents, avg 97 words, no mid-sentence cuts.
 
 **Milestone 4 — Embedding and retrieval:**
 I'll give Claude the Retrieval Approach section and the Architecture diagram and ask it to implement `embed_chunks()` using all-MiniLM-L6-v2 and `retrieve()` using ChromaDB returning top-5 chunks with metadata. I'll verify by running the 5 evaluation questions and confirming the returned chunks are actually about the right building or topic.
