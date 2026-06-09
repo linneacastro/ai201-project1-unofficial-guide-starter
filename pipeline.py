@@ -13,6 +13,7 @@ from collections import Counter
 DOCUMENTS_DIR = "documents"
 CHUNK_SIZE = 200    # words (~240 tokens, safely within all-MiniLM-L6-v2's 256-token hard limit)
 OVERLAP = 30        # words — used only by the legacy chunk_text(); natural-boundary chunkers don't need it
+MIN_CHUNK_WORDS = 15  # drop chunks shorter than this (e.g. one-liner Reddit comments)
 
 
 # ---------------------------------------------------------------------------
@@ -285,11 +286,15 @@ def chunk_article(text, source, building=None, chunk_size=CHUNK_SIZE):
 # Build all chunks
 # ---------------------------------------------------------------------------
 
-def build_chunks(documents, chunk_size=CHUNK_SIZE, overlap=OVERLAP):
+def build_chunks(documents, chunk_size=CHUNK_SIZE, overlap=OVERLAP, min_words=MIN_CHUNK_WORDS):
     """
     Chunk all documents using the appropriate strategy:
       - apartmentratings_* : one chunk per review  (chunk_reviews)
+      - reddit_*           : one chunk per comment  (chunk_reddit)
       - everything else    : paragraph-boundary     (chunk_article)
+
+    Chunks shorter than min_words are dropped (catches one-liner Reddit comments
+    and other noise that can't be meaningfully retrieved).
     """
     all_chunks = []
     for doc in documents:
@@ -305,7 +310,7 @@ def build_chunks(documents, chunk_size=CHUNK_SIZE, overlap=OVERLAP):
             all_chunks.extend(
                 chunk_article(doc["text"], doc["source"], doc["building"], chunk_size)
             )
-    return all_chunks
+    return [c for c in all_chunks if c["word_count"] >= min_words]
 
 
 # ---------------------------------------------------------------------------
