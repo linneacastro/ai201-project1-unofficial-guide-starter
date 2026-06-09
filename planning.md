@@ -91,8 +91,8 @@
 | 1 | What do students say about maintenance responsiveness at Hub U District? | Reviews mention slow or unresolved maintenance requests; op-ed calls it out specifically |
 | 2 | Which U-District landlords or buildings have the most complaints about deposit disputes? | ApartmentRatings reviews for Campus Apartments mention deposit and maintenance issues |
 | 3 | How much should I expect to pay for a studio apartment in the U-District? | Sources cite ~$1,334/mo avg studio (summer 2025); The Standard at $2,700/mo for 407 sq ft |
-| 4 | What rights do I have as a tenant in Seattle if my landlord doesn't make repairs? | Daily UW tenant rights articles cover repair timelines, habitability standards, and deposit law |
-| 5 | Is it worth living in a U-District high-rise vs. a smaller building? | Multiple sources contrast amenity-heavy towers (high cost, noise, unresolved issues) vs. smaller buildings (cheaper, more responsive landlords) |
+| 4 | What rights do I have as a tenant in Seattle if my landlord doesn't make repairs? | Seattle law requires repairs within a reasonable time; landlords must return security deposits with itemized deductions within 21 days; tenants can report habitability issues to the city |
+| 5 | What specific complaints do students have about U-District high-rises like LIV, HUB, and Lavender? | The 2024 Daily UW op-ed cites unresolved maintenance requests and high rents at all three buildings specifically |
 
 ---
 
