@@ -26,25 +26,19 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | Yelp — The Kelsey Apartments | 17 student reviews of a U-District Student Housing building; covers pricing, management, and commute | https://www.yelp.com/biz/u-district-student-housing-the-kelsey-apartments-seattle |
-| 2 | Yelp — Apex | 25 student reviews; individual leasing model for UW students, mixed feedback on value | https://www.yelp.com/biz/u-district-student-housing-apex-seattle |
-| 3 | Yelp — Hub U District | 10 student reviews of a large complex on University Way NE; community amenities, noise | https://www.yelp.com/biz/hub-u-district-seattle-seattle |
-| 4 | ApartmentRatings — AVA U District | 14 verified resident reviews; covers staff responsiveness and proximity to campus | https://www.apartmentratings.com/wa/seattle/ava-u-district_9199332346275145274/ |
-| 5 | ApartmentRatings — Yugo Seattle Lothlorien | 35 verified resident reviews; candid notes on U-District safety and building upkeep | https://www.apartmentratings.com/wa/seattle/yugo-seattle-lothlorien_206726466398105/ |
-| 6 | ApartmentRatings — Campus Apartments | 21 verified resident reviews; mixed on maintenance and deposit disputes | https://www.apartmentratings.com/wa/seattle/campus-apartments_206633369498105/ |
-| 7 | ApartmentRatings — U-District Student Housing Lakeview | Verified resident reviews of a student-specific complex on 7th Ave NE | https://www.apartmentratings.com/wa/seattle/u-district-student-housing-lakeview_9199332346275191032/ |
-| 8 | The Daily UW — Cost vs. convenience | Feb 2026 article on how students weigh rent price against proximity to campus | https://www.dailyuw.com/article/students-weigh-cost-with-convenience-in-search-for-off-campus-housing-20260213 |
-| 9 | The Daily UW — High-rise pricing | Mar 2026 investigation into U-District tower costs; a 407 sq ft studio at The Standard runs $2,700/mo | https://www.dailyuw.com/article/bang-over-buck-the-high-prices-behind-the-u-district-s-newest-high-rises-20260309 |
-| 10 | The Daily UW — Renter rights awareness | Mar 2023 article on students not knowing their rights; covers repair timelines and deposit law | https://www.dailyuw.com/news/it-doesn-t-occur-to-people-that-they-have-rights-as-renters/article_2bcdcaf2-bd65-11ed-9910-e72cb52bdf07.html |
-| 11 | The Daily UW — Tenant rights guide | Feb 2021 guide to Seattle tenant protections; rent increase notices, habitability, deposit caps | https://www.dailyuw.com/huskymediagroup/article_c7f1fcc2-672d-11eb-8df4-334d70554d88.html |
-| 12 | The Daily UW — High-rises scamming students (opinion) | Jan 2024 op-ed calling out LIV, HUB, and Lavender for unresolved maintenance and high rents | https://www.dailyuw.com/opinion/u-district-high-rises-are-scamming-students/article_4b95323c-be66-11ee-9e38-f3b7dfaaaca5.html |
-| 13 | The Daily UW — Summer housing costs | Apr 2025 article on students priced out of the U-District over summer; avg studio $1,334/mo | https://www.dailyuw.com/article/high-housing-costs-challenge-uw-students-staying-in-seattle-for-the-summer-20250416 |
-| 14 | The Daily UW — The ugly side of UW housing | Apr 2026 article examining problems in UW on-campus and U-District housing | https://www.dailyuw.com/article/the-ugly-side-of-uw-housing-20260417 |
-| 15 | UW Off-Campus Housing Marketplace | UW Student Media's official listing board; includes tenant resources and housing search tools | https://offcampushousing.uw.edu/listing |
-| 16 | UW IELP Off-Campus Housing Guide | UW's official guide covering scam warnings, tenant rights, neighborhoods, and lease basics | https://www.ielp.uw.edu/life-at-the-uw/housing/off-campus-housing |
-| 17 | Tripalink — U-District Apartment Guide | Student housing guide covering U-District neighborhoods, pricing, and red flags (mold, pests) | https://tripalink.com/blog/student-housing-in-u-district-your-complete-apartment-guide |
-| 18 | r/udub — housing threads | UW subreddit; search "housing apartment" — pull 2–3 specific threads with student advice | https://www.reddit.com/r/udub/search/?q=housing+apartment&sort=top |
-| 19 | r/Seattle — U-District housing threads | Seattle subreddit; search "university district housing" — pull 2–3 threads on landlord experiences | https://www.reddit.com/r/Seattle/search/?q=university+district+housing+apartments&sort=top |
+| 1 | ApartmentRatings — AVA U District | 14 verified resident reviews; covers staff responsiveness and proximity to campus | https://www.apartmentratings.com/wa/seattle/ava-u-district_9199332346275145274/ |
+| 2 | ApartmentRatings — Yugo Seattle Lothlorien | 35 verified resident reviews; candid notes on U-District safety and building upkeep | https://www.apartmentratings.com/wa/seattle/yugo-seattle-lothlorien_206726466398105/ |
+| 3 | ApartmentRatings — Campus Apartments | 21 verified resident reviews; mixed on maintenance and deposit disputes | https://www.apartmentratings.com/wa/seattle/campus-apartments_206633369498105/ |
+| 4 | The Daily UW — Cost vs. convenience | Feb 2026 article on how students weigh rent price against proximity to campus | https://www.dailyuw.com/article/students-weigh-cost-with-convenience-in-search-for-off-campus-housing-20260213 |
+| 5 | The Daily UW — High-rise pricing | Mar 2026 investigation into U-District tower costs; a 407 sq ft studio at The Standard runs $2,700/mo | https://www.dailyuw.com/article/bang-over-buck-the-high-prices-behind-the-u-district-s-newest-high-rises-20260309 |
+| 6 | The Daily UW — Tenant rights guide | Feb 2021 guide to Seattle tenant protections; rent increase notices, habitability, deposit caps | https://www.dailyuw.com/huskymediagroup/article_c7f1fcc2-672d-11eb-8df4-334d70554d88.html |
+| 7 | The Daily UW — High-rises scamming students (opinion) | Jan 2024 op-ed on high-rise issues in the U-District; focuses on The Standard (maintenance, security, rent) | https://www.dailyuw.com/opinion/u-district-high-rises-are-scamming-students/article_4b95323c-be66-11ee-9e38-f3b7dfaaaca5.html |
+| 8 | The Daily UW — Summer housing costs | Apr 2025 article on students priced out of the U-District over summer; avg studio $1,334/mo | https://www.dailyuw.com/article/high-housing-costs-challenge-uw-students-staying-in-seattle-for-the-summer-20250416 |
+| 9 | The Daily UW — The ugly side of UW housing | Apr 2026 article examining problems in UW on-campus and U-District housing | https://www.dailyuw.com/article/the-ugly-side-of-uw-housing-20260417 |
+| 10 | UW IELP Off-Campus Housing Guide | UW's official guide covering scam warnings, tenant rights, neighborhoods, and lease basics | https://www.ielp.uw.edu/life-at-the-uw/housing/off-campus-housing |
+| 11 | Tripalink — U-District Apartment Guide | Student housing guide covering U-District neighborhoods, pricing, and red flags (mold, pests) | https://tripalink.com/blog/student-housing-in-u-district-your-complete-apartment-guide |
+| 12 | r/udub — housing threads | UW subreddit; search "housing apartment" — pull 2–3 specific threads with student advice | https://www.reddit.com/r/udub/search/?q=housing+apartment&sort=top |
+| 13 | r/Seattle — U-District housing threads | Seattle subreddit; search "university district housing" — pull 2–3 threads on landlord experiences | https://www.reddit.com/r/Seattle/search/?q=university+district+housing+apartments&sort=top |
 
 ---
 
@@ -69,7 +63,7 @@ Manual inspection of 5 sample chunks from the original word-based splitter revea
 | Reddit posts/comments | `reddit_*` | One chunk per post or comment, split on `---` delimiters added to source files; header-only blocks filtered | `chunk_reddit()` |
 | Articles and guides | everything else | Paragraphs accumulated up to 200 words, flushed at paragraph boundary; sentence-boundary fallback for oversized single paragraphs | `chunk_article()` |
 
-**Corpus-level result:** 140 chunks across 13 documents, average 97 words per chunk (range: 4–200).
+**Corpus-level result:** 132 chunks across 13 documents, average 103 words per chunk (range: 16–200).
 
 **Known limitation:** Very short Reddit comments (e.g., "Define affordable for you" — 4 words) produce weak embeddings with too little signal for similarity search to work reliably. A potential fix is enforcing a minimum chunk size and merging short comments into an adjacent block.
 
@@ -106,7 +100,7 @@ Manual inspection of 5 sample chunks from the original word-based splitter revea
 | 2 | Which U-District landlords or buildings have the most complaints about deposit disputes? | ApartmentRatings reviews for Campus Apartments mention deposit and maintenance issues |
 | 3 | How much should I expect to pay for a studio apartment in the U-District? | Sources cite ~$1,334/mo avg studio (summer 2025); The Standard at $2,700/mo for 407 sq ft |
 | 4 | What rights do I have as a tenant in Seattle if my landlord doesn't make repairs? | Seattle law requires repairs within a reasonable time; landlords must return security deposits with itemized deductions within 21 days; tenants can report habitability issues to the city |
-| 5 | What specific complaints do students have about U-District high-rises like LIV, HUB, and Lavender? | The 2024 Daily UW op-ed cites unresolved maintenance requests and high rents at all three buildings specifically |
+| 5 | What specific complaints do students have about The Standard and other U-District high-rises? | The 2024 Daily UW op-ed cites spotty WiFi, broken elevators, unsecured premises, stolen packages, and rent above $2,000–$2,300 at The Standard |
 
 ---
 
@@ -148,7 +142,7 @@ flowchart LR
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
-I gave Claude the Documents table and the Chunking Strategy section and asked it to implement `load_documents()` and a chunking pipeline. The initial implementation used a single word-based `chunk_text()` with 200-word chunks and 30-word overlap. After manually inspecting 5 sample chunks and finding mid-sentence cuts and cross-chunk pronoun references, the pipeline was refactored into three document-aware strategies: `chunk_reviews()` for ApartmentRatings files (one chunk per review, `---` delimited), `chunk_reddit()` for Reddit files (one chunk per post/comment, `---` delimiters added to source files), and `chunk_article()` for articles and guides (paragraph-boundary accumulation). Result: 140 chunks across 13 documents, avg 97 words, no mid-sentence cuts.
+I gave Claude the Documents table and the Chunking Strategy section and asked it to implement `load_documents()` and a chunking pipeline. The initial implementation used a single word-based `chunk_text()` with 200-word chunks and 30-word overlap. After manually inspecting 5 sample chunks and finding mid-sentence cuts and cross-chunk pronoun references, the pipeline was refactored into three document-aware strategies: `chunk_reviews()` for ApartmentRatings files (one chunk per review, `---` delimited), `chunk_reddit()` for Reddit files (one chunk per post/comment, `---` delimiters added to source files), and `chunk_article()` for articles and guides (paragraph-boundary accumulation). Result: 132 chunks across 13 documents, avg 103 words, no mid-sentence cuts.
 
 **Milestone 4 — Embedding and retrieval:**
 I'll give Claude the Retrieval Approach section and the Architecture diagram and ask it to implement `embed_chunks()` using all-MiniLM-L6-v2 and `retrieve()` using ChromaDB returning top-5 chunks with metadata. I'll verify by running the 5 evaluation questions and confirming the returned chunks are actually about the right building or topic.

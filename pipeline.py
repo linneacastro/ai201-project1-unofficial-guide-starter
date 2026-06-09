@@ -1,13 +1,16 @@
 """
-Milestone 3 — Document ingestion and chunking.
+Milestones 3 & 4 — Document ingestion, chunking, embedding, and retrieval.
 
-Run this file directly to load, chunk, and inspect the corpus:
+Run this file directly to load, chunk, embed, store, and test retrieval:
     python pipeline.py
 """
 
 import os
 import re
 from collections import Counter
+
+import chromadb
+from sentence_transformers import SentenceTransformer
 
 
 DOCUMENTS_DIR = "documents"
@@ -314,6 +317,102 @@ def build_chunks(documents, chunk_size=CHUNK_SIZE, overlap=OVERLAP, min_words=MI
 
 
 # ---------------------------------------------------------------------------
+# Embedding and vector store
+# ---------------------------------------------------------------------------
+
+CHROMA_COLLECTION = "udistrict_housing"
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+
+
+def load_embedding_model(model_name=EMBEDDING_MODEL):
+    """Load the sentence-transformers model. Downloads on first run, cached after."""
+    print(f"Loading embedding model: {model_name}")
+    model = SentenceTransformer(model_name)
+    print("Model loaded.")
+    return model
+
+
+def embed_and_store(chunks, model, collection_name=CHROMA_COLLECTION):
+    """
+    Embed all chunks and upsert into a local ChromaDB collection.
+
+    Each chunk is stored with:
+        id        — unique chunk identifier (e.g. apartmentratings_hub_chunk_003)
+        embedding — 384-dim vector from all-MiniLM-L6-v2
+        document  — the raw chunk text (ChromaDB's term for the content field)
+        metadata  — source, building, chunk position extracted from the id
+    """
+    client = chromadb.Client()
+    # cosine distance matches how sentence-transformers embeddings are designed to be compared
+    collection = client.get_or_create_collection(
+        name=collection_name,
+        metadata={"hnsw:space": "cosine"},
+    )
+
+    texts = [c["text"] for c in chunks]
+    print(f"Embedding {len(texts)} chunks...")
+    embeddings = model.encode(texts, show_progress_bar=True).tolist()
+
+    ids = [c["id"] for c in chunks]
+    metadatas = [
+        {
+            "source": c["source"],
+            "building": c["building"] or "",
+            "word_count": c["word_count"],
+            # chunk index is the numeric suffix in the id (e.g. 003 → 3)
+            "chunk_index": int(c["id"].rsplit("_", 1)[-1]),
+        }
+        for c in chunks
+    ]
+
+    collection.upsert(
+        ids=ids,
+        embeddings=embeddings,
+        documents=texts,
+        metadatas=metadatas,
+    )
+
+    print(f"Stored {collection.count()} chunks in collection '{collection_name}'.")
+    return collection
+
+
+def retrieve(query, collection, model, top_k=5):
+    """
+    Embed query and return the top_k most similar chunks from ChromaDB.
+
+    Returns a list of dicts with keys: id, text, source, building, distance.
+    """
+    query_embedding = model.encode([query]).tolist()
+    results = collection.query(
+        query_embeddings=query_embedding,
+        n_results=top_k,
+        include=["documents", "metadatas", "distances"],
+    )
+
+    hits = []
+    for i in range(len(results["ids"][0])):
+        hits.append({
+            "id": results["ids"][0][i],
+            "text": results["documents"][0][i],
+            "source": results["metadatas"][0][i]["source"],
+            "building": results["metadatas"][0][i]["building"],
+            "distance": results["distances"][0][i],
+        })
+    return hits
+
+
+def print_retrieval_results(query, hits):
+    print(f"\nQuery: {query!r}")
+    print("=" * 64)
+    for rank, hit in enumerate(hits, 1):
+        print(f"\n[{rank}] {hit['id']}  (distance: {hit['distance']:.4f})")
+        print(f"    Source:   {hit['source']}")
+        print(f"    Building: {hit['building'] or '—'}")
+        print(f"\n{hit['text'][:400]}{'...' if len(hit['text']) > 400 else ''}")
+        print("-" * 64)
+
+
+# ---------------------------------------------------------------------------
 # Inspection helpers
 # ---------------------------------------------------------------------------
 
@@ -362,7 +461,7 @@ def inspect_chunks(chunks, n=5, seed=42):
 
 if __name__ == "__main__":
     print("=" * 64)
-    print("MILESTONE 3 — Document ingestion and chunking")
+    print("MILESTONES 3 & 4 — Ingestion, chunking, embedding, retrieval")
     print("=" * 64)
 
     print("\n--- Loading documents ---\n")
@@ -375,3 +474,24 @@ if __name__ == "__main__":
 
     print("\n--- Sample chunks (manual inspection) ---")
     inspect_chunks(chunks, n=5)
+
+    print("\n\n" + "=" * 64)
+    print("MILESTONE 4 — Embedding and retrieval")
+    print("=" * 64)
+
+    model = load_embedding_model()
+    collection = embed_and_store(chunks, model)
+
+    # Run the 5 evaluation questions from planning.md
+    eval_queries = [
+        "What do students say about maintenance responsiveness at Hub U District?",
+        "Which U-District landlords or buildings have the most complaints about deposit disputes?",
+        "How much should I expect to pay for a studio apartment in the U-District?",
+        "What rights do I have as a tenant in Seattle if my landlord doesn't make repairs?",
+        "What specific complaints do students have about The Standard and other U-District high-rises?",
+    ]
+
+    print("\n--- Retrieval evaluation (top-5 per query) ---")
+    for q in eval_queries:
+        hits = retrieve(q, collection, model, top_k=5)
+        print_retrieval_results(q, hits)
