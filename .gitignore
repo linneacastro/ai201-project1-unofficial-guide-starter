@@ -18,3 +18,6 @@ chroma/
 
 # macOS
 .DS_Store
+
+# Demo scripts
+demo-script.html
